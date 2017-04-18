@@ -25,6 +25,7 @@ int main(int argv, char** args){
     //check to see if argument 2 is a number
     if(shift == 0){
         printf("Number is a 26*n letter shift or is not a number.\n");
+        return 0;
     }
 
     FILE *ifp; // file pointer to the input file that is to be ciphered
@@ -45,13 +46,26 @@ int main(int argv, char** args){
     //check to see if the user wants it printed to screen
     //otherwise try to open file and print to that
     if(!strcmp(args[3], "print")){
-        while(fgets(text, sizeof(text), ifp) != NULL){
+        while(fgets(text, sizeof(text) - 1, ifp) != NULL){
             //check to see if char is alphabetic, if so, shift it
             for(counter = 0; counter < 100; counter ++){
-                if(isalpha(text[counter])){
+                //check if it is lowercase
+                if(islower(text[counter])){
                     text[counter] += shift;
-                    //if it is now non-alphabetic, reshift depending on the operation
-                    if(!isalpha(text[counter])){
+                    //if it is now not lower, reshift depending on the operation
+                    if(!islower(text[counter])){
+                       if(shift >= 0){ 
+                           text[counter] -= 26;
+                       } 
+                       else{
+                           text[counter] += 26;
+                       }
+                    }
+                }
+                else if(isupper(text[counter])){
+                    text[counter] += shift;
+                    //if it is now not upper, reshift depending on the operation
+                    if(!isupper(text[counter])){
                        if(shift >= 0){ 
                            text[counter] -= 26;
                        } 
