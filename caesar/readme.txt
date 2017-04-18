@@ -16,6 +16,7 @@ program - the name you compiled your program to
 inputfile - the name of the input file you want to shift
 
 print to file:
+##WARNING: THIS WILL OVERWRITE THE OUTPUT FILE##
 ------------------------------
 program # inputfile outputfile
 ------------------------------
