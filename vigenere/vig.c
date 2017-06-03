@@ -30,6 +30,15 @@ int main(int argv, char** argc){
         return 0;
     }
 
+    //check to see if the keyword is all lowercase
+    int keylen = strlen(argc[4]);
+    for(i = 0; i < keylen; i ++){
+        if(!islower(argc[4][i])){
+            printf("Keyword has to be all lowercase!!!\n");
+            return 0;
+        }
+    }
+
     //input file can't match output file
     if(strcmp(argc[2], argc[3]) == 0){
         printf("Input and output files should not be the same.\n");
@@ -44,18 +53,47 @@ int main(int argv, char** argc){
 
     ofp = fopen(argc[3], "w");
 
+    int keycount = 0; //counter for where you are at in the keyword
+
     //check if it is encode or decode
     if(strcmp(argc[1],"e") == 0){
         //open the input file and read what is in it
         while( fgets( buffer, sizeof(buffer), ifp) != NULL){
-            for( i = 0; i < buffer && buffer[i] != NULL; i ++){
-                    
+            //go through every letter and check if it is a letter
+            //if it is then take the keyword and the letter and encrypt it
+            for( i = 0; i < 100 && buffer[i] != 0; i ++){
+                if(islower(buffer[i])){
+                    buffer[i] = tabula[argc[4][keycount] - 97][buffer[i] - 97] + 97;
+                    keycount ++;
+                }               
+                else if(isupper(buffer[i])){               
+                    buffer[i] = tabula[argc[4][keycount] - 97][buffer[i] - 65] + 65;
+                    keycount ++;
+                }              
+                keycount %= keylen;               
             }
             fprintf(ofp, "%s", buffer);    
         }            
     }
     else if(strcmp(argc[1], "d") == 0){
         while( fgets( buffer, sizeof(buffer), ifp) != NULL){
+            //go through every letter and check if it is a letter
+            //if it is then take the keyword and the letter and decrypt it
+            for( i = 0; i < 100 && buffer[i] != 0; i ++){
+                if(islower(buffer[i])){
+                    if( (buffer[i] = 97 + buffer[i] - argc[4][keycount]) < 97){
+                        buffer[i] += 26;
+                    }
+                    keycount ++;
+                }               
+                else if(isupper(buffer[i])){               
+                    if( (buffer[i] = 65 + buffer[i] - argc[4][keycount] + 32) < 65){
+                        buffer[i] += 26;
+                    }
+                    keycount ++;
+                }              
+                keycount %= keylen;               
+            }           
             fprintf(ofp, "%s", buffer);    
         }            
     }
